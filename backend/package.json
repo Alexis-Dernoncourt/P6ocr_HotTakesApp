@@ -19,8 +19,11 @@
   },
   "homepage": "https://github.com/Alexis-Dernoncourt/P6ocr_HotTakesApp#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
-    "mongoose": "^6.0.12"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.12",
+    "mongoose-unique-validator": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.14"
