@@ -5,11 +5,11 @@ const router = express.Router();
 
 const sauceCtrl = require('../controllers/sauce');
 
-router.get('/', auth, upload, sauceCtrl.getAllSauces);
-router.get('/:id', auth, upload, sauceCtrl.getOneSauce);
+router.get('/', auth, sauceCtrl.getAllSauces);
+router.get('/:id', auth, sauceCtrl.getOneSauce);
 router.post('/', auth, upload, sauceCtrl.createSauce);
-// router.put('/:id', auth, sauceCtrl.modifySauce);
+router.put('/:id', auth, upload, sauceCtrl.modifySauce);
 router.delete('/:id', auth, sauceCtrl.deleteSauce);
-// router.post('/:id/like', auth, sauceCtrl.likeSauce);
+router.post('/:id/like', auth, upload, sauceCtrl.likeSauce);
 
 module.exports = router;
