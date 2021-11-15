@@ -15,9 +15,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 // DB CONNEXION
 mongoose.connect(`mongodb+srv://${config.db.user}:${config.db.password}@cluster0.fmlqg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
-    useUnifiedTopology: true })
-.then(() => console.log('Connexion à MongoDB réussie !'))
-.catch(() => console.log('Connexion à MongoDB échouée !'));
+    useUnifiedTopology: true });
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -28,6 +26,5 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
-
 
 module.exports = app;
