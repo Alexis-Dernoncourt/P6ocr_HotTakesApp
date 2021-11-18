@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-exports.signup = (req, res, next) => {
+exports.signup = (req, res) => {
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
           const user = new User({
@@ -16,7 +16,7 @@ exports.signup = (req, res, next) => {
       .catch(error => res.status(500).json({ error }));
 };
 
-exports.login = (req, res, next) => {
+exports.login = (req, res) => {
     User.findOne({ email: req.body.email })
       .then(user => {
         if (!user) {
@@ -31,7 +31,7 @@ exports.login = (req, res, next) => {
               userId: user._id,
               token: jwt.sign(
                 { userId: user._id },
-                'RANDOM_TOKEN_SECRET',
+                'ySWQiOiI2MTg0OWUyNmY5YjQxNDdjYjkwYzgwYmUiLCJpYXQiOjE2MzcwMjQwNzUsImV4cCI6MTYzNzExMDQ3NX2MTg0OWUyNmY5YjQxNDdjYjkwYzgwYmUi',
                 { expiresIn: '24h' }
               )
             });

@@ -13,21 +13,21 @@ Then, clone this repo.
 ### Frontend folder ###
 In the terminal go to the frontend folder. Then run `npm install`, and run `npm install --save-dev run-script-os`.
 
-### backend folder ###
+### Backend folder ###
 In the terminal go to the backend folder. Then run `npm install` to install all dependencies.
 
 
 ## Usage ##
+
+IMPORTANT: For launch the app, first run backend - like explained below, then run frontend (the login page will automatically been opened in your browser).
+
+### Backend folder ###
+Run `npm start` to run the backend server with node.
+Use `Ctrl+C` in the terminal to stop the backend server.
+
 ### Frontend folder ###
 Run `npm start`. This should both run the local server and launch your browser.
 
 If your browser fails to launch, or shows a 404 error, navigate your browser to http://localhost:8080.
-
 The app should reload automatically when you make a change to a file.
-
 Use `Ctrl+C` in the terminal to stop the local server.
-
-### backend folder ###
-Run `npm start` to run the backend server with node.
-
-Use `Ctrl+C` in the terminal to stop the backend server.

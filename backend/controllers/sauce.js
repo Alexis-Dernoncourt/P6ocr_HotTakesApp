@@ -1,8 +1,7 @@
 const Sauce = require('../models/Sauce');
-//const path = require("path");
 const fs = require('fs');
 
-exports.getAllSauces = (req, res) => {
+exports.getAllSauces = (_, res) => {
     Sauce.find()
     .then(sauces => res.status(200).json(sauces))
     .catch(error => res.status(400).json({ error }));
@@ -15,7 +14,6 @@ exports.getOneSauce = (req, res) => {
 };
 
 exports.createSauce = (req, res) => {
-    //delete req.body._id;
     const reqSauce = JSON.parse(req.body.sauce);
     const sauce = new Sauce({
             ...reqSauce,
@@ -69,25 +67,23 @@ exports.deleteSauce = (req, res) => {
 exports.likeSauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
-        let usersLikedTab = sauce.usersLiked;
-        let usersDislikedTab = sauce.usersDisliked;
-        if(req.body.like === 1){
+        const usersLikedTab = sauce.usersLiked;
+        const usersDislikedTab = sauce.usersDisliked;
+        if(req.body.like === 1) {
             usersLikedTab.push(req.body.userId);
             const newLike = usersLikedTab.length;
             const updatedSauce = {usersLiked: usersLikedTab, likes: newLike };
             Sauce.updateOne({ _id: req.params.id }, { ...updatedSauce, _id: req.params.id })
                 .then(() => res.status(200).json({ message: 'Objet modifié !'}))
                 .catch(error => res.status(400).json({ error }));
-        } 
-        else if (req.body.like === -1) {
+        } else if (req.body.like === -1) {
             usersDislikedTab.push(req.body.userId);
             const newDislike = usersDislikedTab.length;
             const updatedSauce = {usersDisliked: usersDislikedTab, dislikes: newDislike };
             Sauce.updateOne({ _id: req.params.id }, { ...updatedSauce, _id: req.params.id })
                 .then(() => res.status(200).json({ message: 'Objet modifié !'}))
                 .catch(error => res.status(400).json({ error }));
-        }
-        else if (req.body.like === 0) {
+        } else if (req.body.like === 0) {
             const filteredTabOfUsersLiked = usersLikedTab.filter(el => el !== req.body.userId);
             const filteredTabOfUsersDisliked = usersDislikedTab.filter(el => el !== req.body.userId);
             const newLikes = filteredTabOfUsersLiked.length;
