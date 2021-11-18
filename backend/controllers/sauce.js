@@ -69,7 +69,7 @@ exports.likeSauce = (req, res) => {
     .then(sauce => {
         const usersLikedTab = sauce.usersLiked;
         const usersDislikedTab = sauce.usersDisliked;
-        if(req.body.like === 1){
+        if(req.body.like === 1) {
             usersLikedTab.push(req.body.userId);
             const newLike = usersLikedTab.length;
             const updatedSauce = {usersLiked: usersLikedTab, likes: newLike };
