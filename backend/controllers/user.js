@@ -3,10 +3,15 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res) => {
-    bcrypt.hash(req.body.password, 10)
+  const pwd = req.body.password;
+  const mail = req.body.email;
+  const passwordCheck = new RegExp("^[a-zA-Z0-9-/()&~_\\\ç$|}{]{8,}$");
+  const mailCheck = new RegExp("^[a-zA-Z0-9.!#$%&*+/=?^_{|}~\-]+@[a-zA-Z0-9.!#$%&*+/=?^_~\-]+\\.[a-zA-Z0-9]{2,}$", "ig");
+  if (pwd !== "" && mail !== "" && passwordCheck.test(pwd) && mailCheck.test(mail)) {
+    bcrypt.hash(pwd, 10)
       .then(hash => {
           const user = new User({
-              email: req.body.email,
+              email: mail,
               password: hash
           });
           user.save()
@@ -14,6 +19,9 @@ exports.signup = (req, res) => {
             .catch(error => res.status(400).json({ error }));
       })
       .catch(error => res.status(500).json({ error }));
+  } else {
+    throw new Error("Mot de passe ou email erroné");
+  }
 };
 
 exports.login = (req, res) => {
