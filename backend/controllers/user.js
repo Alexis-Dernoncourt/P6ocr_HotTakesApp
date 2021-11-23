@@ -5,13 +5,13 @@ const jwt = require('jsonwebtoken');
 exports.signup = (req, res) => {
   const pwd = req.body.password;
   const mail = req.body.email;
-  const passwordCheck = new RegExp("^[a-zA-Z0-9-/()&~_\\\ç$|}{]{8,}$");
+  const passwordCheck = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#$%&()+,-./:;=?@\\[\\]^_`{|}~])[A-Za-z0-9!#$%&()+,-./:;=?@\\[\\]^_`{|}~]{8,}$");
   const mailCheck = new RegExp("^[a-zA-Z0-9.!#$%&*+/=?^_{|}~\-]+@[a-zA-Z0-9.!#$%&*+/=?^_~\-]+\\.[a-zA-Z0-9]{2,}$", "ig");
   if (pwd !== "" && mail !== "" && passwordCheck.test(pwd) && mailCheck.test(mail)) {
     bcrypt.hash(pwd, 10)
       .then(hash => {
           const user = new User({
-              email: mail,
+              email: mail.trim(),
               password: hash
           });
           user.save()
