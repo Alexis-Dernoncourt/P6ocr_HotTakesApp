@@ -2,11 +2,12 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+const passwordCheck = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#$%&()+,-./:;=?@\\[\\]^_`{|}~])[A-Za-z0-9!#$%&()+,-./:;=?@\\[\\]^_`{|}~]{8,}$");
+const mailCheck = new RegExp("^[a-zA-Z0-9.!#$%&*+/=?^_{|}~\-]+@[a-zA-Z0-9.!#$%&*+/=?^_~\-]+\\.[a-zA-Z0-9]{2,}$", "ig");
+
 exports.signup = (req, res) => {
   const pwd = req.body.password;
   const mail = req.body.email;
-  const passwordCheck = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#$%&()+,-./:;=?@\\[\\]^_`{|}~])[A-Za-z0-9!#$%&()+,-./:;=?@\\[\\]^_`{|}~]{8,}$");
-  const mailCheck = new RegExp("^[a-zA-Z0-9.!#$%&*+/=?^_{|}~\-]+@[a-zA-Z0-9.!#$%&*+/=?^_~\-]+\\.[a-zA-Z0-9]{2,}$", "ig");
   if (pwd !== "" && mail !== "" && passwordCheck.test(pwd) && mailCheck.test(mail)) {
     bcrypt.hash(pwd, 10)
       .then(hash => {
@@ -25,12 +26,15 @@ exports.signup = (req, res) => {
 };
 
 exports.login = (req, res) => {
-    User.findOne({ email: req.body.email })
+  const pwd = req.body.password;
+  const mail = req.body.email;
+  if (pwd !== "" && mail !== "" && passwordCheck.test(pwd) && mailCheck.test(mail)) {
+    User.findOne({ email: mail })
       .then(user => {
         if (!user) {
           return res.status(401).json({ error: 'Utilisateur non trouvé !' });
         }
-        bcrypt.compare(req.body.password, user.password)
+        bcrypt.compare(pwd, user.password)
           .then(valid => {
             if (!valid) {
               return res.status(401).json({ error: 'Mot de passe incorrect !' });
@@ -47,4 +51,7 @@ exports.login = (req, res) => {
           .catch(error => res.status(500).json({ error }));
       })
       .catch(error => res.status(500).json({ error }));
+  } else {
+    throw new Error("Mot de passe ou email erroné, veuillez réessayer");
+  }
 };
