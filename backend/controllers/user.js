@@ -1,14 +1,12 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-
-const passwordCheck = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#$%&()+,-./:;=?@\\[\\]^_`{|}~])[A-Za-z0-9!#$%&()+,-./:;=?@\\[\\]^_`{|}~]{8,}$");
-const mailCheck = new RegExp("^[a-zA-Z0-9.!#$%&*+/=?^_{|}~\-]+@[a-zA-Z0-9.!#$%&*+/=?^_~\-]+\\.[a-zA-Z0-9]{2,}$", "ig");
+const match = require('../utils/regex');
 
 exports.signup = (req, res) => {
   const pwd = req.body.password;
   const mail = req.body.email;
-  if (pwd !== "" && mail !== "" && passwordCheck.test(pwd) && mailCheck.test(mail)) {
+  if (pwd !== "" && mail !== "" && match.regex.passwordCheck.test(pwd) && match.regex.mailCheck.test(mail)) {
     bcrypt.hash(pwd, 10)
       .then(hash => {
           const user = new User({
@@ -28,7 +26,7 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
   const pwd = req.body.password;
   const mail = req.body.email;
-  if (pwd !== "" && mail !== "" && passwordCheck.test(pwd) && mailCheck.test(mail)) {
+  if (pwd !== "" && mail !== "" && match.regex.passwordCheck.test(pwd) && match.regex.mailCheck.test(mail)) {
     User.findOne({ email: mail })
       .then(user => {
         if (!user) {
@@ -52,6 +50,6 @@ exports.login = (req, res) => {
       })
       .catch(error => res.status(500).json({ error }));
   } else {
-    throw new Error("Mot de passe ou email erroné, veuillez réessayer");
+      throw new Error("Mot de passe ou email erroné, veuillez réessayer");
   }
 };
