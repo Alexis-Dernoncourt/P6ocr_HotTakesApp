@@ -19,7 +19,7 @@ In the terminal go to the backend folder. Then run `npm install` to install all 
 
 ## Usage ##
 
-IMPORTANT: For launch the app, first run backend - like explained below, then run frontend (the login page will automatically been opened in your browser).
+IMPORTANT: Before launch the app, first create a folder named 'images' in the backend folder (to save images added), then run backend - like explained below, then run frontend (the login page will automatically been opened in your browser).
 
 ### Backend folder ###
 Run `npm start` to run the backend server with node.
