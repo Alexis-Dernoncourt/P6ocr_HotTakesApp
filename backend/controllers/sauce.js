@@ -23,29 +23,40 @@ exports.createSauce = (req, res) => {
             usersLiked: [],
             usersDisliked: []
         });
-        sauce.save()
-        .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-        .catch(error => res.status(400).json({ error }));
+        if (sauce.userId === req.token.userId) {
+            sauce.save()
+            .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
+            .catch(error => res.status(400).json({ error }));
+        } else {
+            res.status(401).json({ error: "userId non valide"});
+        }
 };
 
 exports.modifySauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
         const filename = sauce.imageUrl.split('/images/')[1];
-
         if (req.file) {
             const sauceObject = {
             ...JSON.parse(req.body.sauce),
             imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` };
-            fs.unlink(`images/${filename}`, () => {
-                Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+            if (sauceObject.userId === sauce.userId) {
+                fs.unlink(`images/${filename}`, () => {
+                    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+                    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+                    .catch(error => res.status(400).json({ error }));
+                });
+            } else {
+                res.status(401).json({ error: "Vous n'êtes pas autorisé à réaliser cette action."});
+            }
+        } else {
+            if (sauce.userId === req.token.userId) {
+                Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
                 .then(() => res.status(200).json({ message: 'Objet modifié !'}))
                 .catch(error => res.status(400).json({ error }));
-            });
-        } else {
-            Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-            .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-            .catch(error => res.status(400).json({ error }));
+            } else {
+                res.status(401).json({ error: "Vous n'êtes pas autorisé à réaliser cette action"});
+            }
         }
     })
     .catch(error => res.status(400).json({ error }));
@@ -54,12 +65,16 @@ exports.modifySauce = (req, res) => {
 exports.deleteSauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
-        const filename = sauce.imageUrl.split('/images/')[1];
-        fs.unlink(`images/${filename}`, () => {
-        Sauce.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-          .catch(error => res.status(400).json({ error }));
-        });
+        if (sauce.userId === req.token.userId) {
+            const filename = sauce.imageUrl.split('/images/')[1];
+            fs.unlink(`images/${filename}`, () => {
+            Sauce.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+            .catch(error => res.status(400).json({ error }));
+            });
+        } else {
+            res.status(401).json({ error: "Vous n'êtes pas autorisé à réaliser cette action."});
+        }
     })
     .catch(error => res.status(500).json({ error }));
 };
